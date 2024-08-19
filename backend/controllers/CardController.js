@@ -23,11 +23,11 @@ exports.getCards = async (request, response) => {
 exports.getCardByTitle = async (request, response) => {
     try {
         const title = request.params.title
-        const card = await cardService.getCardByTitle(title)
-        if (card == null) {
+        const cards = await cardService.getCardByTitle(title)
+        if (cards == null) {
             response.status(200).json({ message: 'no card found with given title' })
         } else {
-            response.status(200).json(card)
+            response.status(200).json({ cards: cards })
         }
 
     } catch (error) {

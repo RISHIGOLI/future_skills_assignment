@@ -15,7 +15,6 @@ header {
   background-color: black;
   color: white;
   display: flex;
-  justify-content: space-around;
   align-items: center;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
@@ -36,7 +35,7 @@ button {
   align-items: center;
   height: 200px;
   width: auto;
-  background-color: darkslateblue;
+  background-color: rgb(192, 207, 221);
 }
 
 footer {
@@ -99,4 +98,52 @@ h6 {
 .grid-item-desciption{
   padding: 5px;
   text-align: justify;
+}
+
+.loading-container{
+  height: '100%';
+  width: '100%';
+  background-color: 'red';
+  display: 'flex';
+  justify-content: 'center';
+  align-items: 'center';
+  margin: auto;
+}
+
+footer .trademark-container{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: white;
+}
+
+.search-container{
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input{
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: 'none',
+}
+
+.search-button{
+  
+    position: absolute;
+    top: 50%;
+    right: -10px;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: black
+  
 }

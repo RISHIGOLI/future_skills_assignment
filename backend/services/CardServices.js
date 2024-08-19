@@ -11,5 +11,5 @@ exports.getCards = async () => {
 
 exports.getCardByTitle = async (title) => {
     console.log('title received', title)
-    return await Card.findOne({ title })
+    return Card.find({ title: { $regex: title, $options: 'i' } });
 }

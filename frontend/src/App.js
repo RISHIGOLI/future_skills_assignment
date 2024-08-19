@@ -1,61 +1,138 @@
 import './App.css';
+import search from './assets/search.png'
+import { useEffect, useState } from 'react'
+import { makeHttpRequest } from './helper';
 
-const gridItems = [
-  { title: 'Branches', description: 'Abstract Branches lets you manage, version, and document your designs in one place.' },
-  { title: 'Manage your account', description: 'Configure your account settings, such as your email, profile details, and password.' },
-  { title: 'Manage organizations, teams, and projects', description: 'Use Abstract organizations, teams, and projects to organize your people and your work.' },
-  { title: 'Manage billing', description: 'Change subscriptions and payment details.' },
-  { title: 'Authenticate to Abstract', description: 'Set up and configure SSO, SCIM, and Just-in-Time provisioning.' },
-  { title: 'Abstract support', description: 'Get in touch with a human.' }
+const footerItems = [
+  {
+    title: 'About',
+    links: ['Branches']
+  },
+  {
+    title: 'Resources',
+    links: ['Blog', 'Help Center', 'Release Notes', 'Status']
+  },
+  {
+    title: 'Community',
+    links: ['Twitter', 'LinkedIn', 'Facebook', 'Dribbble', 'Podcast']
+  },
+  {
+    title: 'Company',
+    links: ['About Us', 'Careers', 'Legal']
+  },
+  {
+    title: 'Contact Us',
+    links: ['info@abstract.com']
+  }
 ]
 
 function App() {
+  const [cards, setCards] = useState([])
+  const [showLoading, setShowLoading] = useState(true)
+
+  useEffect(() => {
+    fetchCards()
+  }, [])
+
+  async function fetchCards() {
+    try {
+      const response = await makeHttpRequest('/cards', "GET", null)
+      setCards(response.cards);
+      setShowLoading(false)
+    } catch (error) {
+      console.log('error occured', error.message);
+    }
+  }
+
+  const debounce = (func, delay) => {
+    let debounceId
+    return function (e) {
+      clearTimeout(debounceId)
+      debounceId = setTimeout(() => { func(e.target.value) }, delay)
+    }
+  }
+
+  const callApi = async (title) => {
+    setShowLoading(true)
+    try {
+      console.log('api called', title);
+      const response = await makeHttpRequest(`/cards/${title}`, "GET")
+      setCards(response.cards)
+      setShowLoading(false)
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  const fetchCardByTitle = debounce(callApi, 1000)
+
   return (
     <div className="container">
       <header>
-        <span>Abstract | Help Center</span>
-        <button >Submit a request</button>
+        <div style={{ width: '80%', display: 'flex', justifyContent: 'space-between', margin: 'auto' }}>
+          <span>Abstract | Help Center</span>
+          <button >Submit a request</button>
+        </div>
       </header>
 
       <div className='banner-section'>
         <h1>How can we help ?</h1>
-        <input type="text" placeholder='search' />
+        <div className='search-container'>
+          <input type="text" placeholder='search' onChange={fetchCardByTitle} className='search-input' />
+          <button className='search-button'>search</button>
+        </div>
       </div>
 
       <div className='cards-section'>
-        <div className='grid-container'>
-          {
-            gridItems.map((item, index) => (
-              <div className='grid-item'>
-                <div className='grid-item-title'>
-                  Branches
-                </div>
-                <div className='grid-item-desciption'>
-                  asdf asf asd asdf asga gagasg  asg asg agag asgasgasgasgagag ag agasgasg asgasg as
-                </div>
-              </div>
-            ))
-          }
-        </div>
+        {
+          showLoading ?
+            <div className='loading-container'>
+              <span>loading...</span>
+            </div> :
+            <div className='grid-container'>
+              {
+                cards.map((card, index) => (
+                  <div className='grid-item'>
+                    <div className='grid-item-title'>
+                      {card.title}
+                    </div>
+                    <div className='grid-item-desciption'>
+                      {card.description}
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+        }
+
+        {
+          cards.length == 0 && <div className='loading-container'>
+            <span>No cards available</span>
+          </div>
+        }
+
       </div>
 
       <footer>
-        <div className='footer-items-container'>
-          <h3>About</h3>
-          <h6>Branches</h6>
+        {
+          footerItems.map((footerItem, index) => (
+            <div className='footer-items-container'>
+              <h3>{footerItem.title}</h3>
+              {
+                footerItem.links.map((link, index) => (
+                  <h6>{link}</h6>
+                ))
+              }
+            </div>
+          ))
+        }
+
+        <div className='trademark-container'>
+          <span>@ Copyright 2022</span>
+          <span>Abstract Studio Design, Inc.</span>
+          <span>All Rights Reserved</span>
         </div>
-        <div className='footer-items-container'>
-          <h3>Resources</h3>
-          <h6>Branches</h6>
-        </div>
-        <div className='footer-items-container'>
-          <h3>Community</h3>
-          <h6>Branches</h6>
-        </div>
-        <div className='footer-items-container'>
-          <h3>Company</h3>
-          <h6>Branches</h6>
-        </div>
+
       </footer>
     </div>
   );
